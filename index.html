@@ -8,10 +8,10 @@
 <style>
 body{
 font-family:Arial,sans-serif;
-background:#f8f8f8;
-padding:20px;
-max-width:700px;
+background:#f5f5f5;
+max-width:800px;
 margin:auto;
+padding:20px;
 }
 
 h1{
@@ -20,32 +20,34 @@ color:#d35400;
 }
 
 .item{
-background:white;
+background:#fff;
 padding:10px;
 margin:10px 0;
-border-radius:10px;
+border-radius:8px;
+border:1px solid #ddd;
 }
 
 button{
-padding:8px 15px;
 background:#25D366;
 color:white;
 border:none;
+padding:8px 12px;
 border-radius:5px;
 cursor:pointer;
-}
-
-input{
-padding:8px;
-width:100%;
-margin-top:10px;
 }
 
 #cart{
 background:white;
 padding:15px;
 margin-top:20px;
-border-radius:10px;
+border-radius:8px;
+border:1px solid #ddd;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:10px;
 }
 </style>
 </head>
@@ -58,7 +60,6 @@ border-radius:10px;
 
 <div id="cart">
 <h2>Your Order</h2>
-
 <div id="cartItems"></div>
 
 <h3>Total ₹<span id="total">0</span></h3>
@@ -67,92 +68,94 @@ border-radius:10px;
 
 <br><br>
 
-<button onclick="sendWhatsApp()">
-Place Order on WhatsApp
-</button>
-
+<button onclick="sendWhatsApp()">Place Order on WhatsApp</button>
 </div>
 
 <script>
 
 const products = [
-{name:"Cake",price:300},
-{name:"Pastry",price:40},
-{name:"Bread",price:35},
-{name:"Cookies",price:60},
-{name:"Donut",price:25},
-{name:"Muffin",price:45},
-{name:"Cupcake",price:35},
-{name:"Pizza Bread",price:80},
-{name:"Brownie",price:70},
-{name:"Sandwich",price:90}
+["Cake",300],
+["Pastry",40],
+["Bread",35],
+["Cookies",60],
+["Donut",25],
+["Muffin",45],
+["Cupcake",35],
+["Pizza Bread",80],
+["Brownie",70],
+["Sandwich",90]
 ];
 
-let cart=[];
+let cart = [];
 
-const productsDiv=document.getElementById("products");
+const productsDiv = document.getElementById("products");
 
-products.forEach((p,index)=>{
-productsDiv.innerHTML+=`
+for(let i=0;i<products.length;i++){
+
+productsDiv.innerHTML += `
 <div class="item">
-<b>${p.name}</b><br>
-₹${p.price}
-<button onclick="addToCart(${index})">
-Add
-</button>
-</div>`;
-});
+<b>${products[i][0]}</b><br>
+₹${products[i][1]}<br><br>
+<button onclick="addToCart(${i})">Add To Cart</button>
+</div>
+`;
 
-function addToCart(index){
+}
 
-cart.push(products[index]);
+function addToCart(i){
 
+cart.push(products[i]);
 updateCart();
+
 }
 
 function updateCart(){
 
-let total=0;
 let html="";
+let total=0;
 
-cart.forEach(item=>{
-total+=item.price;
-html+=`${item.name} - ₹${item.price}<br>`;
-});
+for(let i=0;i<cart.length;i++){
 
-document.getElementById("cartItems").innerHTML=html;
-document.getElementById("total").innerText=total;
+html += cart[i][0] + " - ₹" + cart[i][1] + "<br>";
+total += cart[i][1];
+
+}
+
+document.getElementById("cartItems").innerHTML = html;
+document.getElementById("total").innerText = total;
+
 }
 
 function sendWhatsApp(){
 
-let name=document.getElementById("customerName").value;
+let name = document.getElementById("customerName").value;
 
 if(name===""){
 alert("Enter Name");
 return;
 }
 
-let total=document.getElementById("total").innerText;
+let total = document.getElementById("total").innerText;
 
-let order="";
+let orderText = "";
 
-cart.forEach(item=>{
-order+=item.name+" - ₹"+item.price+"%0A";
-});
+for(let i=0;i<cart.length;i++){
+orderText += cart[i][0] + " - ₹" + cart[i][1] + "%0A";
+}
 
-let message=
-"New Bakery Order%0A%0A"+
-"Name: "+name+"%0A%0A
-  order+
-"%0ATotal: ₹"+total;
+let message =
+"New Bakery Order%0A%0A" +
+"Name: " + name + "%0A%0A" +
+orderText +
+"%0ATotal: ₹" + total;
 
 window.open(
-"https://wa.me/919520309088?text="+message,
+"https://wa.me/919520309088?text=" + message,
 "_blank"
 );
 
 }
+
 </script>
 
 </body>
