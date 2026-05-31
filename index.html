@@ -1,61 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RiSEP & DTA BAKERY</title>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
 body{
+font-family:Arial,sans-serif;
 background:#f5f5f5;
-padding:15px;
+max-width:800px;
+margin:auto;
+padding:20px;
 }
 
-.header{
-background:#d35400;
-color:white;
-padding:15px;
-border-radius:10px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px;
-}
-
-.cart-box{
-background:white;
-color:black;
-padding:8px 12px;
-border-radius:20px;
-font-weight:bold;
-}
-
-.products{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-gap:15px;
-}
-
-.card{
-background:white;
-padding:15px;
-border-radius:10px;
+h1{
 text-align:center;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
+color:#d35400;
 }
 
-.card h3{
+.item{
+background:#fff;
+padding:10px;
 margin:10px 0;
+border-radius:8px;
+border:1px solid #ddd;
 }
 
-.card button{
+button{
 background:#25D366;
 color:white;
 border:none;
@@ -64,32 +36,12 @@ border-radius:5px;
 cursor:pointer;
 }
 
-.cart{
+#cart{
 background:white;
-margin-top:20px;
 padding:15px;
-border-radius:10px;
-}
-
-.cart-item{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin:10px 0;
-}
-
-.qty-btn{
-padding:3px 10px;
-margin:0 3px;
-}
-
-.remove{
-background:red;
-color:white;
-border:none;
-padding:5px 8px;
-border-radius:5px;
-cursor:pointer;
+margin-top:20px;
+border-radius:8px;
+border:1px solid #ddd;
 }
 
 input{
@@ -97,186 +49,111 @@ width:100%;
 padding:10px;
 margin-top:10px;
 }
-
-.order-btn{
-width:100%;
-margin-top:10px;
-padding:12px;
-background:#25D366;
-color:white;
-border:none;
-border-radius:5px;
-font-size:16px;
-cursor:pointer;
-}
 </style>
 </head>
 
 <body>
 
-<div class="header">
-<h2>🧁 RiSEP & DTA BAKERY</h2>
-<div class="cart-box">🛒 <span id="cartCount">0</span></div>
-</div>
+<h1>RiSEP & DTA BAKERY</h1>
 
-<div class="products" id="products"></div>
+<div id="products"></div>
 
-<div class="cart">
+<div id="cart">
 <h2>Your Order</h2>
-<div id="cartItems">Your cart is empty.</div>
+<div id="cartItems"></div>
 
-<h3 style="margin-top:10px;">
-Total ₹<span id="total">0</span>
-</h3>
+<h3>Total ₹<span id="total">0</span></h3>
 
 <input type="text" id="customerName" placeholder="Enter Your Name">
 
-<button class="order-btn" onclick="sendWhatsApp()">
-📱 Place Order on WhatsApp
-</button>
+<br><br>
+
+<button onclick="sendWhatsApp()">Place Order on WhatsApp</button>
 </div>
 
 <script>
 
 const products = [
-{name:"🎂 Cake",price:300},
-{name:"🍰 Pastry",price:40},
-{name:"🍞 Bread",price:35},
-{name:"🍪 Cookies",price:60},
-{name:"🍩 Donut",price:25},
-{name:"🧁 Muffin",price:45},
-{name:"🧁 Cupcake",price:35},
-{name:"🍕 Pizza Bread",price:80},
-{name:"🍫 Brownie",price:70},
-{name:"🥪 Sandwich",price:90}
+["🎂 Cake",300],
+["🍰 Pastry",40],
+["🍞 Bread",35],
+["🍪 Cookies",60],
+["🍩 Donut",25],
+["🧁 Muffin",45],
+["🧁 Cupcake",35],
+["🍕 Pizza Bread",80],
+["🍫 Brownie",70],
+["🥪 Sandwich",90]
 ];
 
-let cart=[];
+let cart = [];
 
-const productsDiv=document.getElementById("products");
+const productsDiv = document.getElementById("products");
 
-products.forEach((item,index)=>{
-productsDiv.innerHTML+=`
-<div class="card">
-<h3>${item.name}</h3>
-<p>₹${item.price}</p>
-<br>
-<button onclick="addToCart(${index})">
-Add To Cart
-</button>
+for(let i=0;i<products.length;i++){
+
+productsDiv.innerHTML += `
+<div class="item">
+<b>${products[i][0]}</b><br>
+₹${products[i][1]}<br><br>
+<button onclick="addToCart(${i})">Add To Cart</button>
 </div>
 `;
-});
 
-function addToCart(index){
-
-let found=cart.find(x=>x.name===products[index].name);
-
-if(found){
-found.qty++;
-}else{
-cart.push({
-name:products[index].name,
-price:products[index].price,
-qty:1
-});
 }
 
+function addToCart(i){
+
+cart.push(products[i]);
 updateCart();
+
 }
 
 function updateCart(){
 
 let html="";
 let total=0;
-let count=0;
 
-if(cart.length===0){
-document.getElementById("cartItems").innerHTML=
-"Your cart is empty.";
-document.getElementById("total").innerText=0;
-document.getElementById("cartCount").innerText=0;
-return;
+for(let i=0;i<cart.length;i++){
+
+html += cart[i][0] + " - ₹" + cart[i][1] + "<br>";
+total += cart[i][1];
+
 }
 
-cart.forEach((item,i)=>{
+document.getElementById("cartItems").innerHTML = html;
+document.getElementById("total").innerText = total;
 
-count+=item.qty;
-total+=item.price*item.qty;
-
-html+=`
-<div class="cart-item">
-<div>
-${item.name}<br>
-₹${item.price} × ${item.qty}
-</div>
-
-<div>
-<button class="qty-btn" onclick="changeQty(${i},-1)">-</button>
-<button class="qty-btn" onclick="changeQty(${i},1)">+</button>
-<button class="remove" onclick="removeItem(${i})">X</button>
-</div>
-</div>
-`;
-
-});
-
-document.getElementById("cartItems").innerHTML=html;
-document.getElementById("total").innerText=total;
-document.getElementById("cartCount").innerText=count;
-}
-
-function changeQty(index,value){
-
-cart[index].qty+=value;
-
-if(cart[index].qty<=0){
-cart.splice(index,1);
-}
-
-updateCart();
-}
-
-function removeItem(index){
-cart.splice(index,1);
-updateCart();
 }
 
 function sendWhatsApp(){
 
-let name=document.getElementById("customerName").value.trim();
+let name = document.getElementById("customerName").value;
 
 if(name===""){
-alert("Please enter your name");
+alert("Enter Name");
 return;
 }
 
-if(cart.length===0){
-alert("Cart is empty");
-return;
+let total = document.getElementById("total").innerText;
+
+let orderText = "";
+
+for(let i=0;i<cart.length;i++){
+orderText += cart[i][0] + " - ₹" + cart[i][1] + "%0A";
 }
-
-let total=document.getElementById("total").innerText;
-
-let order="";
-
-cart.forEach(item=>{
-order += item.name + " x " + item.qty +
-" = ₹" + (item.price * item.qty) + "\n";
-});
 
 let message =
-"🧁 RiSEP & DTA BAKERY\n\n" +
-"Customer: " + name + "\n\n" +
-order +
-"\nTotal: ₹" + total;
+"New Bakery Order%0A%0A" +
+"Name: " + name + "%0A%0A" +
+orderText +
+"%0ATotal: ₹" + total;
 
-let whatsappURL =
-"https://wa.me/919520309088?text=" +
-encodeURIComponent(message);
+window.open(
+"https://wa.me/919520309088?text=" + message,
+"_blank"
+);
 
-window.open(whatsappURL,"_blank");
-}
 }
 
 </script>
