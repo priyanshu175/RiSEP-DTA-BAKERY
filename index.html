@@ -30,11 +30,18 @@ margin-bottom:20px;
 }
 
 .cart-box{
-background:white;
-color:black;
-padding:8px 12px;
-border-radius:20px;
+position:fixed;
+top:20px;
+right:20px;
+background:#25D366;
+color:white;
+padding:12px 18px;
+border-radius:50px;
+font-size:20px;
 font-weight:bold;
+box-shadow:0 4px 10px rgba(0,0,0,0.3);
+z-index:9999;
+cursor:pointer;
 }
 
 .products{
@@ -161,7 +168,7 @@ productsDiv.innerHTML+=`
 <h3>${item.name}</h3>
 <p>₹${item.price}</p>
 <br>
-<button onclick="addToCart(${index})">
+<button id="btn${index}" onclick="addToCart(${index})">
 Add To Cart
 </button>
 </div>
@@ -181,7 +188,12 @@ price:products[index].price,
 qty:1
 });
 }
+let btn=document.getElementById("btn"+index);
 
+if(btn){
+btn.style.background="#90EE90";
+btn.innerHTML="✓ Added";
+}
 updateCart();
 }
 
